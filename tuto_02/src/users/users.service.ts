@@ -38,7 +38,7 @@ export class UsersService {
   }
 
   async findAll() {
-    const users = await this.userRepo.find({ order: { created_at: 'desc' }, relations: { userProfile: true } })
+    const users = await this.userRepo.find({ order: { created_at: 'desc' }, relations: ['userProfile', 'posts'] })
     return users;
   }
 

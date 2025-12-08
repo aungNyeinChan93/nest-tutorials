@@ -1,5 +1,5 @@
 /* eslint-disable prettier/prettier */
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query, ParseIntPipe } from '@nestjs/common';
 import { PostsService } from './posts.service';
 import { CreatePostDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
@@ -9,8 +9,8 @@ export class PostsController {
   constructor(private readonly postsService: PostsService) { }
 
   @Post()
-  async create(@Body() createPostDto: CreatePostDto) {
-    return this.postsService.create(createPostDto);
+  async create(@Body() createPostDto: CreatePostDto, @Query('categoryId', ParseIntPipe) categoryId: number) {
+    return this.postsService.create(createPostDto, categoryId);
   }
 
   @Get()

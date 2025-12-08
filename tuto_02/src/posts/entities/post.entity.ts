@@ -1,6 +1,7 @@
 /* eslint-disable prettier/prettier */
+import { Category } from "src/categories/entities/category.entity";
 import { User } from "src/users/entities/user.entity";
-import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToMany, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()
 export class Post {
@@ -16,4 +17,7 @@ export class Post {
     @ManyToOne(() => User, user => user.posts, { cascade: false })
     @JoinColumn({ name: "user_id" })
     user: User
+
+    @ManyToMany(() => Category, category => category.posts)
+    categories: Category[]
 }
