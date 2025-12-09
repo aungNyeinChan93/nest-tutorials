@@ -1,8 +1,11 @@
+/* eslint-disable @typescript-eslint/no-unsafe-return */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable prettier/prettier */
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Req } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { LocalAuthGuard } from 'src/auth/guard/local-auth.guard';
 
 @Controller('users')
 export class UsersController {
@@ -13,9 +16,11 @@ export class UsersController {
     return this.usersService.create(createUserDto);
   }
 
+  @UseGuards(LocalAuthGuard)
   @Get()
-  findAll() {
-    return this.usersService.findAll();
+  findAll(@Req() req: any) {
+    return req?.user;
+    // return this.usersService.findAll();
   }
 
   @Get(':id')

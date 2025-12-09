@@ -1,5 +1,5 @@
 /* eslint-disable prettier/prettier */
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -25,6 +25,14 @@ export class UsersService {
 
   findOne(id: number) {
     return `This action returns a #${id} user`;
+  }
+
+  async findByEmail(email: string) {
+    const user = await this.userRepo.findOne({
+      where: { email }
+    });
+    if (!user) throw new UnauthorizedException('user not found!');
+    return user;
   }
 
   update(id: number, updateUserDto: UpdateUserDto) {
