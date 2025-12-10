@@ -25,7 +25,15 @@ export class AuthService {
 
     login(user: ValidateUser) {
         const payload: JwtAuthPayload = { sub: user?.id, email: user?.email }
-        const token = this.jwt.sign(payload)
-        return { user, token }
+        const token = this.jwt.sign(payload, { secret: process.env.JWT_SECRET, expiresIn: '1h' });
+        const refreshToken = this.jwt.sign(payload, { secret: process.env.JWT_REFRESH_SECRET, expiresIn: '7d' })
+        return { user, token, refreshToken };
+    }
+
+    refresh(user: ValidateUser) {
+        const payload: JwtAuthPayload = { sub: user?.id, email: user?.email };
+        const token = this.jwt.sign(payload, { secret: process.env.JWT_SECRET, expiresIn: '1h' });
+        return { token };
+
     }
 }

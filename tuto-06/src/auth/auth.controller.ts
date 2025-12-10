@@ -4,6 +4,7 @@ import { AuthService } from './auth.service';
 import { LocalAuthGuard } from './guard/local-auth.guard';
 import { ValidateUser } from './types/authUser.type';
 import { JwtAuthGuard } from './guard/jwt-auth.guard';
+import { RefreshJwtAuthGuard } from './guard/refresh-jwt-auth.guard';
 
 @Controller('auth')
 export class AuthController {
@@ -21,5 +22,12 @@ export class AuthController {
   @Get('profile')
   profile(@Req() { user }: { user: ValidateUser }) {
     return user;
+  }
+
+  @HttpCode(HttpStatus.OK)
+  @UseGuards(RefreshJwtAuthGuard)
+  @Get('refresh')
+  refresh(@Req() { user }: { user: ValidateUser }) {
+    return this.authService.refresh(user);
   }
 }
