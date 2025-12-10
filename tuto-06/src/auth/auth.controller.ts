@@ -30,4 +30,11 @@ export class AuthController {
   refresh(@Req() { user }: { user: ValidateUser }) {
     return this.authService.refresh(user);
   }
+
+  @HttpCode(HttpStatus.OK)
+  @UseGuards(JwtAuthGuard)
+  @Post('sign-out')
+  signOut(@Req() { user }: { user: ValidateUser }) {
+    return this.authService.signOut(user);
+  }
 }

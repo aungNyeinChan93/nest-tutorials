@@ -21,4 +21,7 @@ export class User {
         this.password = await hash(this.password, await genSalt(10))
     }
 
+    @Column({ nullable: true })
+    hashRefreshToken: string;
+
 }
