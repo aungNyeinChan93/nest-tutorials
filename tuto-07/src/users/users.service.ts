@@ -1,5 +1,5 @@
 /* eslint-disable prettier/prettier */
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -23,6 +23,13 @@ export class UsersService {
     const user = await this.userRepo.findOneBy({ email });
     if (!user) throw new NotFoundException('user not found!')
     return user;
+  }
+
+
+  async updateHashRefreshToken({ userId, hashRefreshToken }: { userId: number, hashRefreshToken: string | null }) {
+    const { affected } = await this.userRepo.update(userId, { hashRefreshToken: hashRefreshToken! })
+    if (!affected) throw new ConflictException('update refreshToken fail!')
+    return true;
   }
 
   findAll() {
