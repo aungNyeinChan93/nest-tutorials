@@ -8,11 +8,23 @@ import { JwtModule } from '@nestjs/jwt';
 import 'dotenv/config'
 import { JwtStrategy } from './strategies/jwt.strategy';
 import { RefreshStrategy } from './strategies/refresh.strategy';
+import { APP_GUARD } from '@nestjs/core';
+import { JwtAuthGuard } from './guard/jwt-auth.guard';
 
 
 @Module({
   controllers: [AuthController],
-  providers: [AuthService, LocalStrategy, JwtStrategy, RefreshStrategy],
+  providers: [
+    AuthService, LocalStrategy, JwtStrategy, RefreshStrategy,
+
+    // module lvl jwt-auth-guard
+    {
+      provide: APP_GUARD,
+      useClass: JwtAuthGuard
+    },
+
+
+  ],
   imports: [
     UsersModule,
     JwtModule.register({

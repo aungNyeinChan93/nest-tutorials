@@ -8,18 +8,20 @@ import { RefreshAuthGuard } from './guard/refresh-auth.guard';
 import { RoleGuard } from './guard/role.guard';
 import { Role } from './decorator/role.decorator';
 import { CurrentUser } from './decorator/current-user.decorator';
+import { Public } from './decorator/public.decorator';
 
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) { }
 
+  @Public(true)
   @UseGuards(LocalAuthGuard)
   @Post('login')
   login(@Req() { user }: { user: AuthUser }) {
     return this.authService.login(user);
   }
 
-  @UseGuards(JwtAuthGuard)
+  // @UseGuards(JwtAuthGuard) //GLOBAL USER JWTAUTHGUARD
   @Get('profile')
   profile(@Req() { user }: { user: AuthUser }) {
     return user;
@@ -45,11 +47,14 @@ export class AuthController {
     return user;
   }
 
-
-
   @UseGuards(JwtAuthGuard)
   @Get('detail')
   detail(@CurrentUser() user: AuthUser) {
+    return user;
+  }
+
+  @Get('test-one')  //for global jwtAuthGuard
+  testOne(@CurrentUser() user: AuthUser) {
     return user;
   }
 }
