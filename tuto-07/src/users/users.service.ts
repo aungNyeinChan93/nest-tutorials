@@ -1,5 +1,6 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable prettier/prettier */
-import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
+import { ConflictException, Injectable, Logger, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -9,14 +10,21 @@ import { Repository } from 'typeorm';
 @Injectable()
 export class UsersService {
 
+  private logger: Logger = new Logger(UsersService.name, { timestamp: true })
+
   constructor(
     @InjectRepository(User) private readonly userRepo: Repository<User>,
   ) { }
 
   async create(createUserDto: CreateUserDto) {
-    const user = this.userRepo.create(createUserDto);
-    const saveUser = await this.userRepo.save(user);
-    return saveUser;
+    try {
+      const user = this.userRepo.create(createUserDto);
+      const saveUser = await this.userRepo.save(user);
+      return saveUser;
+    } catch (error) {
+      this.logger.error(error instanceof Error ? error?.message : "user create fail")
+      throw new ConflictException(error instanceof Error ? error?.message : 'user create fail')
+    }
   };
 
   async findByEmail({ email }: { email: string }) {
@@ -32,8 +40,11 @@ export class UsersService {
     return true;
   }
 
-  findAll() {
-    return `This action returns all users`;
+  async findAll() {
+    const users = await this.userRepo.find({
+      order: { created_at: 'DESC' },
+    })
+    return users;
   }
 
   findOne(id: number) {
@@ -44,7 +55,9 @@ export class UsersService {
     return `This action updates a #${id} user`;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} user`;
+  async remove(id: number) {
+    const { affected } = await this.userRepo.delete(id);
+    if (!affected) throw new UnauthorizedException('delete user fail!')
+    return { message: 'user delete successfully!' };
   }
 }

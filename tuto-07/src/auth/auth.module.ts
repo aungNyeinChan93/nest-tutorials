@@ -5,7 +5,7 @@ import { AuthController } from './auth.controller';
 import { UsersModule } from 'src/users/users.module';
 import { LocalStrategy } from './strategies/local.strategy';
 import { JwtModule } from '@nestjs/jwt';
-import 'dotenv/config'
+import 'dotenv/config';
 import { JwtStrategy } from './strategies/jwt.strategy';
 import { RefreshJwtStrategy } from './strategies/refreshJwt.strategy';
 
@@ -18,9 +18,9 @@ import { RefreshJwtStrategy } from './strategies/refreshJwt.strategy';
       global: true,
       secret: process.env.JWT_SECRET,
       signOptions: {
-        expiresIn: '1h'
-      }
-    })
-  ]
+        expiresIn: '1h',
+      },
+    }),
+  ],
 })
-export class AuthModule { }
+export class AuthModule {}

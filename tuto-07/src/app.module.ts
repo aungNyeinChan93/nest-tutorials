@@ -6,6 +6,7 @@ import { UsersModule } from './users/users.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthModule } from './auth/auth.module';
+import { TrialModule } from './trial/trial.module';
 
 @Module({
   controllers: [AppController],
@@ -19,11 +20,12 @@ import { AuthModule } from './auth/auth.module';
         type: 'postgres',
         url: configService.getOrThrow<string>('DATABASE_URL'),
         autoLoadEntities: true,
-        synchronize: true
-      })
+        synchronize: true,
+      }),
     }),
     UsersModule,
     AuthModule,
+    TrialModule,
   ],
 })
-export class AppModule { }
+export class AppModule {}
