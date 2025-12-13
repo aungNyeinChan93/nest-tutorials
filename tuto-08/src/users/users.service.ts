@@ -26,6 +26,11 @@ export class UsersService {
     return user;
   };
 
+  async findOneByEmail(email: string) {
+    const user = await this.userRepo.findOneBy({ email });
+    return user;
+  }
+
   async updateHashRefreshToken({ userId, refreshToken }: { userId: number, refreshToken: string | null }) {
     const { affected } = await this.userRepo.update(userId, { hashRefreshToken: refreshToken as string })
     if (!affected) throw new ConflictException('update refreshToken fail');

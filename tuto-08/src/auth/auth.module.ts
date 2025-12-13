@@ -10,12 +10,13 @@ import { JwtStrategy } from './strategies/jwt.strategy';
 import { RefreshStrategy } from './strategies/refresh.strategy';
 import { APP_GUARD } from '@nestjs/core';
 import { JwtAuthGuard } from './guard/jwt-auth.guard';
+import { GoogleStrategy } from './strategies/google.strategy';
 
 
 @Module({
   controllers: [AuthController],
   providers: [
-    AuthService, LocalStrategy, JwtStrategy, RefreshStrategy,
+    AuthService, LocalStrategy, JwtStrategy, RefreshStrategy, GoogleStrategy,
 
     // module lvl jwt-auth-guard
     {

@@ -4,10 +4,13 @@
 /* eslint-disable prettier/prettier */
 import { ConflictException, Injectable, UnauthorizedException } from '@nestjs/common';
 import { UsersService } from 'src/users/users.service';
-import { AuthUser, JwtAuthPayload } from './../users/types/users.types';
+import { AuthUser, JwtAuthPayload, UserRole } from './../users/types/users.types';
 import { compare } from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import * as argon from 'argon2'
+import { CreateUserDto } from 'src/users/dto/create-user.dto';
+import { UpdateUserDto } from 'src/users/dto/update-user.dto';
+import { GoogleUserDto } from './dto/google-user.dto';
 
 @Injectable()
 export class AuthService {
@@ -70,6 +73,24 @@ export class AuthService {
         const isSuccess = await this.userService.updateHashRefreshToken({ userId: user?.id, refreshToken: null })
         if (!isSuccess) throw new ConflictException('logout fail')
         return { message: 'logout success!' }
+    }
+
+    async validateGoolgleUser(googleUser: GoogleUserDto) {
+        const user = await this.userService.findOneByEmail(googleUser?.email);
+
+        if (!user) {
+            const createUserDto: CreateUserDto = {
+                email: googleUser?.email,
+                name: googleUser?.name,
+                hashrefreshToken: null,
+                password: '',
+                role: UserRole.guest
+            };
+            return await this.userService.create(createUserDto);
+
+        }
+
+        return user;
     }
 
 }

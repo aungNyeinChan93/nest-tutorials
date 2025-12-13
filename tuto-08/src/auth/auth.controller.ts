@@ -9,6 +9,7 @@ import { RoleGuard } from './guard/role.guard';
 import { Role } from './decorator/role.decorator';
 import { CurrentUser } from './decorator/current-user.decorator';
 import { Public } from './decorator/public.decorator';
+import { GoogleAuthGuard } from './guard/google-auth.guard';
 
 @Controller('auth')
 export class AuthController {
@@ -27,6 +28,7 @@ export class AuthController {
     return user;
   }
 
+  @Public(true)
   @UseGuards(RefreshAuthGuard)
   @Get('generate-token')
   generateToken(@Req() { user }: { user: AuthUser }) {
@@ -56,5 +58,18 @@ export class AuthController {
   @Get('test-one')  //for global jwtAuthGuard
   testOne(@CurrentUser() user: AuthUser) {
     return user;
+  }
+
+  @Public(true)
+  @UseGuards(GoogleAuthGuard)
+  @Get('google/login')
+  googleLogin() { }
+
+
+  @Public(true)
+  @UseGuards(GoogleAuthGuard)
+  @Get('google/callback')
+  googleCallback(@Req() { user }: { user: AuthUser }) {
+    return this.authService.login(user);
   }
 }
