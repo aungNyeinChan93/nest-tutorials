@@ -8,7 +8,6 @@ import * as schema from './schema/user.schema'
 import { CreateUserDto } from './dto/create-user.dto';
 import { hash, genSalt } from 'bcrypt'
 import { eq } from 'drizzle-orm';
-import { use } from 'passport';
 
 @Injectable()
 export class UsersService {
@@ -33,6 +32,17 @@ export class UsersService {
     });
     if (!user) throw new NotFoundException('user not found!')
     return user;
+  }
+
+  async updateRefreshToken(userId: string, hashRefreshToken: string | null) {
+    try {
+      await this.db.update(userTable)
+        .set({ hashRefreshToken })
+        .where(eq(userTable.id, userId));
+      return true;
+    } catch (error) {
+      throw new ConflictException(error instanceof Error ? error?.message : 'hashRefreshToken fail!')
+    }
   }
 
   findAll() {

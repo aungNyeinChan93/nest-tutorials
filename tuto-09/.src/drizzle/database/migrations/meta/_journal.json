@@ -15,6 +15,13 @@
       "when": 1765619710757,
       "tag": "0001_long_network",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1765638125526,
+      "tag": "0002_useful_daimon_hellstrom",
+      "breakpoints": true
     }
   ]
 }

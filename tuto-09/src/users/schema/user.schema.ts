@@ -6,8 +6,9 @@ import { text } from "drizzle-orm/pg-core";
 import { pgTable, uuid } from "drizzle-orm/pg-core";
 
 
-export const userRole = pgEnum('userRole', ['guest', 'user', 'admin'])
 
+export const userRole = pgEnum('userRole', ['guest', 'user', 'admin']);
+export type UserRole = typeof userRole.enumValues[number];
 
 export const userTable = pgTable('users', {
     id: uuid().primaryKey().defaultRandom(),
@@ -15,12 +16,15 @@ export const userTable = pgTable('users', {
     email: text().notNull().unique(),
     password: text().notNull(),
     role: userRole().default('guest'),
+    hashRefreshToken: text(),
     createdAt: timestamp().defaultNow().notNull(),
     updatedAt: timestamp().$onUpdate(() => new Date).notNull(),
-
 }, (table) => ({
     emailIndex: index('emailIndex').on(table?.email)
 }));
+
+
+
 
 
 
