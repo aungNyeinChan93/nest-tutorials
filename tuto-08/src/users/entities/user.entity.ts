@@ -1,7 +1,8 @@
 /* eslint-disable prettier/prettier */
-import { BeforeInsert, Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { BeforeInsert, Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import { hash, genSalt } from 'bcrypt'
 import { UserRole } from "../types/users.types";
+import { Post } from "src/posts/entities/post.entity";
 
 @Entity({ name: 'users' })
 export class User {
@@ -32,6 +33,9 @@ export class User {
         default: UserRole.guest
     })
     role: UserRole;
+
+    @OneToMany(() => Post, post => post.user)
+    posts: Post[]
 
     @CreateDateColumn()
     createdAt: Date;

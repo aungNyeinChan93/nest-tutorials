@@ -1,5 +1,5 @@
 /* eslint-disable prettier/prettier */
-import { Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Req, Res, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { LocalAuthGuard } from './guard/local-auth.guard';
 import { type AuthUser, UserRole } from 'src/users/types/users.types';
@@ -10,6 +10,7 @@ import { Role } from './decorator/role.decorator';
 import { CurrentUser } from './decorator/current-user.decorator';
 import { Public } from './decorator/public.decorator';
 import { GoogleAuthGuard } from './guard/google-auth.guard';
+import { type Response } from 'express';
 
 @Controller('auth')
 export class AuthController {
@@ -69,7 +70,9 @@ export class AuthController {
   @Public(true)
   @UseGuards(GoogleAuthGuard)
   @Get('google/callback')
-  googleCallback(@Req() { user }: { user: AuthUser }) {
-    return this.authService.login(user);
+  async googleCallback(@Req() { user }: { user: AuthUser }, @Res() res: Response) {
+    const { token } = await this.authService.login(user);
+    return res.status(200).json({ token });
+    // return res.redirect(`http://localhost:3001?token=${token}`);
   }
 }
